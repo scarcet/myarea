@@ -7,7 +7,7 @@ export default function HomeLayout() {
       <Stack.Screen
         name='posts/[id]'
         options={{
-          title: 'Thread',
+          title: 'Area',
           headerBackButtonDisplayMode: 'generic',
         }}
       />

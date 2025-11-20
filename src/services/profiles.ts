@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { TablesInsert } from '@/types/database.types';
+import { TablesInsert, TablesUpdate } from '@/types/database.types';
 
 export const getProfileById = async (id: string) => {
   const { data } = await supabase

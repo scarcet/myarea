@@ -190,11 +190,13 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform, 
+  ScrollView,
   StyleSheet,
 } from 'react-native';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { router } from 'expo-router';
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState('');
@@ -217,7 +219,8 @@ export default function SignUpScreen() {
       if (error) Alert.alert(error.message);
 
       if (!session)
-        Alert.alert('Please check your inbox for email verification!');
+        // Alert.alert('Please check your inbox for email verification!');
+        router.push('/completeProfileStep1');
     } catch (error) {
       console.error('Login error:', error);
       // TODO: Add proper error handling
@@ -227,20 +230,24 @@ export default function SignUpScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}  behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-    <View className='flex-1 items-center justify-center px-6'>
-      <View className='w-full max-w-sm'>
-        <Text className='text-3xl font-bold text-center mb-8 text-sky-500'>
-          Create an account
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  >
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: 90, paddingHorizontal: 16 }}
+      keyboardShouldPersistTaps="handled"
+    >
+      <View className='w-full max-w-md self-center'>
+        <Text className='text-4xl font-bold text-center mb-10 text-sky-500'>
+          Create Account
         </Text>
 
         <View className='gap-4'>
           <View>
-            <Text className='text-sm font-medium text-neutral-900 mb-1'>
-              Email
-            </Text>
+            <Text className='text-lg font-semibold text-neutral-900 mb-1'>Email</Text>
             <TextInput
-              className='w-full px-4 py-3 bg-neutral-300 border border-neutral-300 rounded-lg text-black placeholder:text-gray-500 focus:border-gray-400'
+              className='w-full px-6 py-4 bg-neutral-300 border border-neutral-300 rounded-2xl text-black text-lg placeholder:text-gray-500 focus:border-gray-400'
               placeholder='Enter your email'
               placeholderTextColor='#6B7280'
               keyboardType='email-address'
@@ -251,11 +258,9 @@ export default function SignUpScreen() {
           </View>
 
           <View>
-            <Text className='text-sm font-medium text-neutral-900 mb-1'>
-              Password
-            </Text>
+            <Text className='text-lg font-semibold text-neutral-900 mb-1'>Password</Text>
             <TextInput
-              className='w-full px-4 py-3 bg-neutral-300 border border-neutral-300 rounded-lg text-black placeholder:text-gray-500 focus:border-gray-400'
+              className='w-full px-6 py-4 bg-neutral-300 border border-neutral-300 rounded-2xl text-black text-lg placeholder:text-gray-500 focus:border-gray-400'
               placeholder='Enter your password'
               placeholderTextColor='#6B7280'
               secureTextEntry
@@ -265,28 +270,28 @@ export default function SignUpScreen() {
           </View>
 
           <TouchableOpacity
-            className='w-full bg-sky-500 py-3 rounded-lg mt-6'
-            activeOpacity={0.8}
+            className='w-full bg-sky-500 py-4 rounded-2xl mt-4'
+            activeOpacity={0.85}
             onPress={handleSignUp}
             disabled={isLoading}
           >
-            <Text className='text-white text-center font-semibold'>
-              {isLoading ? 'Logging in...' : 'Sign up'}
+            <Text className='text-white text-center font-bold text-lg'>
+              {isLoading ? 'Signing up...' : 'Sign up'}
             </Text>
           </TouchableOpacity>
 
-          <View className='flex-row justify-center mt-4'>
-            <Text className='text-gray-400'>Already have an account? </Text>
+          <View className='flex-row justify-center mt-2'>
+            <Text className='text-gray-400 text-base'>Already have an account? </Text>
             <Link href='/signIn' asChild>
               <Pressable>
-                <Text className='text-sky-500 font-medium'>Sign in</Text>
+                <Text className='text-sky-500 font-medium text-base'>Sign in</Text>
               </Pressable>
             </Link>
           </View>
         </View>
       </View>
-    </View>
-    </KeyboardAvoidingView>
+    </ScrollView>
+  </KeyboardAvoidingView>
   );
 }
 

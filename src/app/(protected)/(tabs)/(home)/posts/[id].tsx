@@ -2,7 +2,7 @@ import PostListItem from '@/components/PostListItem';
 import PostReplyInput from '@/components/PostReplyInput';
 import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
-import { View, Text, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, ActivityIndicator, FlatList,  KeyboardAvoidingView, Platform } from 'react-native';
 import { getPostById, getPostsReplies } from '@/services/posts';
 import PostDetails from '@/components/PostDetails';
 
@@ -39,7 +39,11 @@ export default function PostDetailsScreen() {
   }
 
   return (
-    <View className='flex-1 '>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0} // adjust if you have a header
+    >
       <FlatList
         data={replies || []}
         renderItem={({ item }) => <PostListItem post={item} />}
@@ -47,13 +51,14 @@ export default function PostDetailsScreen() {
           <>
             {parent && <PostListItem post={parent} isLastInGroup={false} />}
             <PostDetails post={post} />
-            <Text className='text-white text-lg font-bold p-4 border-b border-neutral-800'>
+            <Text className='text-gray-600 text-lg font-bold p-4 border-b border-neutral-800'>
               Replies
             </Text>
           </>
         }
       />
       <PostReplyInput postId={id} />
-    </View>
+      </KeyboardAvoidingView>
+
   );
 }

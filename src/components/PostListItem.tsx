@@ -7,6 +7,9 @@ import { Tables } from '@/types/database.types';
 import { Link } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import SupabaseImage from './SupabaseImage';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/providers/AuthProvider';
+import { likePost, unlikePost, getLikesForPost, hasUserLikedPost } from '@/services/posts';
 
 dayjs.extend(relativeTime);
 
@@ -24,79 +27,104 @@ export default function PostListItem({
   post: PostWithUser;
   isLastInGroup?: boolean;
 }) {
+  const { user } = useAuth();
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      const likes = await getLikesForPost(post.id);
+      setLikeCount(likes.length);
+      if (user) {
+        const userLiked = await hasUserLikedPost(post.id, user.id);
+        setLiked(userLiked);
+      }
+    };
+    fetchLikes();
+  }, [post.id]);
+
+  const toggleLike = async () => {
+    if (!user) return;
+    try {
+      if (liked) {
+        await unlikePost(post.id, user.id);
+        setLikeCount((prev) => prev - 1);
+      } else {
+        await likePost(post.id, user.id);
+        setLikeCount((prev) => prev + 1);
+      }
+      setLiked(!liked);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <Link href={`/posts/${post.id}`} asChild>
       <Pressable
-        className={`flex-row p-4 ${
-          isLastInGroup ? 'border-b border-gray-800/70' : ''
-        }`}
+        className={`bg-white ${isLastInGroup ? 'border-b border-gray-200' : ''}`}
       >
-        {/* User Avatar */}
-        <View className='mr-3 items-center gap-2'>
+        {/* Header: Avatar + Username + Time */}
+        <View className="flex-row items-center px-4 pt-4">
           <SupabaseImage
-            bucket='avatars'
+            bucket="avatars"
             path={post.user.avatar_url}
-            className='w-12 h-12 rounded-full'
+            className="w-12 h-12 rounded-full mr-3"
             transform={{ width: 50, height: 50 }}
           />
 
-          {!isLastInGroup && (
-            <View className='w-[3px] flex-1 rounded-full bg-neutral-700 translate-y-2' />
-          )}
-        </View>
-
-        {/* Content */}
-        <View className='flex-1'>
-          {/* User Info */}
-          <View className='flex-row items-center'>
-            <Text className='text-white font-bold mr-2'>
+          <View className="flex-1">
+            <Text className="text-black font-semibold text-base">
               {post.user.username}
             </Text>
-            <Text className='text-gray-500'>
+            <Text className="text-gray-500 text-sm">
               {dayjs(post.created_at).fromNow()}
             </Text>
           </View>
+        </View>
 
-          {/* Post Content */}
-          <Text className='text-white mt-2 mb-3'>{post.content}</Text>
+        {/* Post Text Content */}
+        {post.content && (
+          <Text className="text-gray-900 text-base leading-6 px-4 mt-3">
+            {post.content}
+          </Text>
+        )}
 
-          {post.images && (
-            <View className='flex-row gap-2 mt-2'>
-              {post.images.map((image) => (
-                <SupabaseImage
-                  key={image}
-                  bucket='media'
-                  path={image}
-                  className='w-full aspect-square rounded-lg'
-                  transform={{ width: 500, height: 500 }}
-                />
-              ))}
-            </View>
-          )}
-
-          {/* Interaction Buttons */}
-          <View className='flex-row gap-4 mt-2'>
-            <Pressable className='flex-row items-center'>
-              <Ionicons name='heart-outline' size={20} color='#d1d5db' />
-              <Text className='text-gray-300 ml-2'>0</Text>
-            </Pressable>
-
-            <Pressable className='flex-row items-center'>
-              <Ionicons name='chatbubble-outline' size={20} color='#d1d5db' />
-              <Text className='text-gray-300 ml-2'>
-                {post?.replies?.[0].count || 0}
-              </Text>
-            </Pressable>
-
-            <Pressable className='flex-row items-center'>
-              <Ionicons name='repeat-outline' size={20} color='#d1d5db' />
-              <Text className='text-gray-300 ml-2'>0</Text>
-            </Pressable>
-
-            <Pressable>
-              <Ionicons name='paper-plane-outline' size={20} color='#d1d5db' />
-            </Pressable>
+        {/* Post Image */}
+        {post.images && post.images.length > 0 && (
+          <View className="w-full mt-3">
+            <SupabaseImage
+              key={post.images[0]}
+              bucket="media"
+              path={post.images[0]}
+              className="w-full aspect-[4/3] rounded-xl"
+              transform={{ width: 900, height: 675 }}
+            />
           </View>
+        )}
+
+        {/* Interaction Buttons */}
+        <View className="flex-row justify-start px-6 py-3 border-t border-gray-100">
+
+          <Pressable className="flex-row items-center" onPress={toggleLike}>
+          <Ionicons
+              name={liked ? "heart" : "heart-outline"}
+              size={22}
+              color={liked ? "#ef4444" : "#6B7280"}
+            />
+            <Text className="text-gray-600 ml-1 text-sm">
+              {likeCount} {likeCount === 1 ? 'Like' : 'Likes'}
+            </Text>
+          </Pressable>
+
+          <Pressable className="flex-row px-6 items-center">
+            <Ionicons name="chatbubble-outline" size={22} color="#6B7280" />
+            <Text className="text-gray-600 ml-1 text-sm">{post?.replies?.[0].count || 0}   Comment</Text>
+          </Pressable>
+
+          <Pressable className="flex-row items-center">
+            <Ionicons name="paper-plane-outline" size={22} color="#6B7280" />
+            <Text className="text-gray-600 ml-1 text-sm">Share</Text>
+          </Pressable>
         </View>
       </Pressable>
     </Link>

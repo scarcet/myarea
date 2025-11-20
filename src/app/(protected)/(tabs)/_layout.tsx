@@ -53,6 +53,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="(drawer)"
+        options={{
+          title: 'Chats',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Feather name="user" size={24} color={color} />
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',

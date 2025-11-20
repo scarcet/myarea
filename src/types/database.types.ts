@@ -14,29 +14,167 @@ export type Database = {
   }
   public: {
     Tables: {
+      channel_users: {
+        Row: {
+          channel_id: string
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          channel_id: string
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          channel_id?: string
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channel_users_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "channel_users_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      channels: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          type: Database["public"]["Enums"]["channel-type"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          type: Database["public"]["Enums"]["channel-type"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          type?: Database["public"]["Enums"]["channel-type"]
+        }
+        Relationships: []
+      }
+      likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          channel_id: string | null
+          content: string | null
+          created_at: string
+          id: string
+          image: string | null
+          user_id: string | null
+        }
+        Insert: {
+          channel_id?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          image?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          channel_id?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          image?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
+          area: string | null
           content: string | null
           created_at: string
           id: string
           images: string[] | null
           parent_id: string | null
+          post_code: string | null
           user_id: string
         }
         Insert: {
+          area?: string | null
           content?: string | null
           created_at?: string
           id?: string
           images?: string[] | null
           parent_id?: string | null
+          post_code?: string | null
           user_id?: string
         }
         Update: {
+          area?: string | null
           content?: string | null
           created_at?: string
           id?: string
           images?: string[] | null
           parent_id?: string | null
+          post_code?: string | null
           user_id?: string
         }
         Relationships: [
@@ -58,28 +196,49 @@ export type Database = {
       }
       profiles: {
         Row: {
+          area: string | null
           avatar_url: string | null
           bio: string | null
+          country: string | null
+          county: string | null
+          created_at: string | null
+          first_name: string | null
           full_name: string | null
           id: string
+          last_name: string | null
+          post_code: string | null
           updated_at: string | null
           username: string | null
           website: string | null
         }
         Insert: {
+          area?: string | null
           avatar_url?: string | null
           bio?: string | null
+          country?: string | null
+          county?: string | null
+          created_at?: string | null
+          first_name?: string | null
           full_name?: string | null
           id: string
+          last_name?: string | null
+          post_code?: string | null
           updated_at?: string | null
           username?: string | null
           website?: string | null
         }
         Update: {
+          area?: string | null
           avatar_url?: string | null
           bio?: string | null
+          country?: string | null
+          county?: string | null
+          created_at?: string | null
+          first_name?: string | null
           full_name?: string | null
           id?: string
+          last_name?: string | null
+          post_code?: string | null
           updated_at?: string | null
           username?: string | null
           website?: string | null
@@ -94,7 +253,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      "channel-type": "direct" | "group"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -221,6 +380,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      "channel-type": ["direct", "group"],
+    },
   },
 } as const

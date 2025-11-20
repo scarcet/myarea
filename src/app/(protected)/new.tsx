@@ -9,6 +9,7 @@ import {
   Platform,
   Alert,
   Image,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/providers/AuthProvider';
@@ -39,12 +40,15 @@ export default function NewPostScreen() {
         content: text,
         user_id: user!.id,
         images: imagePath ? [imagePath] : undefined,
+        post_code: profile?.post_code,
+        area: profile?.area,
       });
     },
     onSuccess: (data) => {
       setText('');
-      router.back();
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      router.back();
+
     },
     onError: (error) => {
       console.error(error);
@@ -87,70 +91,67 @@ export default function NewPostScreen() {
   };
 
   return (
-    <SafeAreaView edges={['bottom']} className='p-4 flex-1'>
-      <KeyboardAvoidingView
-        className='flex-1'
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 140 : 0}
-      >
-        <View className='flex-row  gap-4'>
-          <SupabaseImage
-            bucket='avatars'
-            path={profile?.avatar_url}
-            className='w-12 h-12 rounded-full'
-            transform={{ width: 50, height: 50 }}
+    <SafeAreaView className="flex-1 bg-white p-4">
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 140 : 0}
+      className="flex-1"
+    >
+          <ScrollView
+          contentContainerStyle={{ padding: 16, flexGrow: 1, justifyContent: 'space-between' }}
+          keyboardShouldPersistTaps="handled"
+        >
+      <View className="flex-row gap-4">
+        <SupabaseImage
+          bucket="avatars"
+          path={profile?.avatar_url}
+          className="w-12 h-12 rounded-full"
+          transform={{ width: 50, height: 50 }}
+        />
+
+        <View className="flex-1">
+          <TextInput
+            value={text}
+            onChangeText={setText}
+            placeholder="What's happening?"
+            placeholderTextColor="gray"
+            className="text-black text-lg"
+            multiline
+            style={{ minHeight: 80 }}
           />
 
-          <View>
-            <Text className='text-white text-lg font-bold'>
-              {profile.username}
-            </Text>
-
-            <TextInput
-              value={text}
-              onChangeText={setText}
-              placeholder='What is on your mind?'
-              placeholderTextColor='gray'
-              className='text-white text-lg'
-              multiline
-              numberOfLines={4}
+          {image && (
+            <Image
+              source={{ uri: image.uri }}
+              className="w-full rounded-xl my-4"
+              style={{ aspectRatio: image.width / image.height }}
             />
+          )}
 
-            {image && (
-              <Image
-                source={{ uri: image.uri }}
-                className='w-1/2 rounded-lg my-4'
-                style={{ aspectRatio: image.width / image.height }}
-              />
-            )}
+          {error && <Text className="text-red-500 text-sm mt-2">{error.message}</Text>}
 
-            {error && (
-              <Text className='text-red-500 text-sm mt-4'>{error.message}</Text>
-            )}
-
-            <View className='flex-row items-center gap-2 mt-4'>
-              <Entypo
-                onPress={pickImage}
-                name='images'
-                size={20}
-                color='gray'
-              />
+          <View className="flex-row items-center justify-between mt-4">
+            <View className="flex-row gap-4">
+              <Entypo name="images" size={24} color="gray" onPress={pickImage} />
+              {/* Add emoji, GIF buttons here if needed */}
             </View>
+
+            <Pressable
+              onPress={() => mutate()}
+              className={`${
+                isPending ? 'bg-gray-300' : 'bg-black'
+              } px-6 py-2 rounded-full`}
+              disabled={isPending || text.trim().length === 0}
+            >
+              <Text className={`font-bold ${isPending ? 'text-gray-500' : 'text-white'}`}>
+                Post
+              </Text>
+            </Pressable>
           </View>
         </View>
-
-        <View className='mt-auto'>
-          <Pressable
-            onPress={() => mutate()}
-            className={`${
-              isPending ? 'bg-white/50' : 'bg-white'
-            } p-3 px-6 self-end rounded-full`}
-            disabled={isPending}
-          >
-            <Text className='text-black font-bold'>Post</Text>
-          </Pressable>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  </SafeAreaView>
   );
 }

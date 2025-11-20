@@ -1,4 +1,4 @@
-import { View, TextInput } from 'react-native';
+import { View, TextInput, Pressable } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
@@ -28,22 +28,27 @@ export default function PostReplyInput({ postId }: { postId: string }) {
   });
 
   return (
-    <View className='p-4 pt-0'>
-      <View className='flex-row items-center gap-2 bg-neutral-800 shadow-md  p-4 rounded-xl'>
+    <View className="bg-white border-t border-gray-200 p-4">
+      <View className="flex-row items-center gap-3 bg-gray-100 rounded-2xl px-4 py-3 shadow-sm">
         <TextInput
           value={text}
           onChangeText={setText}
-          placeholder='Add to thread...'
-          className='flex-1 text-white'
+          placeholder="Add a reply..."
+          placeholderTextColor="#9CA3AF"
+          className="flex-1 text-gray-900 text-base"
           multiline
         />
-        <AntDesign
+        <Pressable
           onPress={() => mutate()}
-          disabled={isPending || text.length === 0}
-          name='plus-circle'
-          size={24}
-          color={text.length === 0 ? 'gray' : 'gainsboro'}
-        />
+          disabled={isPending || text.trim().length === 0}
+          className="p-1"
+        >
+          <AntDesign
+            name="plus-circle"
+            size={28}
+            color={text.trim().length === 0 ? '#0EA5E9' : '#0284C7'}
+          />
+        </Pressable>
       </View>
     </View>
   );

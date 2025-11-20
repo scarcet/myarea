@@ -1,4 +1,12 @@
-import { View, Text, TextInput, Pressable } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  Pressable, 
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform
+ } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getProfileById, updateProfile } from '@/services/profiles';
@@ -7,9 +15,12 @@ import { router } from 'expo-router';
 import UserAvatarPicker from '@/components/UserAvatarPicker';
 
 export default function ProfileEditScreen() {
-  const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [postcode, setPostcode] = useState('');
+  const [area, setArea] = useState('');
+  const [country, setCountry] = useState('');
 
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -26,9 +37,12 @@ export default function ProfileEditScreen() {
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
       updateProfile(user!.id, {
-        full_name: fullName,
+        username,
         bio,
         avatar_url: avatarUrl,
+        post_code: postcode,
+        area,
+        country,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
@@ -37,41 +51,107 @@ export default function ProfileEditScreen() {
   });
 
   useEffect(() => {
-    setFullName(profile?.full_name);
-    setBio(profile?.bio);
-    setAvatarUrl(profile?.avatar_url);
+    setUsername(profile?.username ?? '');
+    setBio(profile?.bio ?? '');
+    setAvatarUrl(profile?.avatar_url ?? '');
+    setPostcode(profile?.post_code ?? '');
+    setArea(profile?.area ?? '');
+    setCountry(profile?.country ?? '');
   }, [profile?.id]);
 
   return (
-    <View className='flex-1 p-4 gap-4'>
-      <UserAvatarPicker currentAvatar={avatarUrl} onUpload={setAvatarUrl} />
-
-      <TextInput
-        value={fullName}
-        onChangeText={setFullName}
-        placeholder='Full Name'
-        className='text-white border-2 border-neutral-800 rounded-md p-4'
-      />
-
-      <TextInput
-        value={bio}
-        onChangeText={setBio}
-        placeholder='Bio'
-        className='text-white border-2 border-neutral-800 rounded-md p-4'
-        multiline
-        numberOfLines={5}
-      />
-      <View className='mt-auto'>
-        <Pressable
-          onPress={() => mutate()}
-          className={`${
-            isPending ? 'bg-white/50' : 'bg-white'
-          } p-4  items-center rounded-full`}
-          disabled={isPending}
-        >
-          <Text className='text-black font-bold'>Save</Text>
-        </Pressable>
+    <KeyboardAvoidingView
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    keyboardVerticalOffset={Platform.OS === 'ios' ? 140 : 0}
+    className="flex-1"
+  >
+    <ScrollView className="flex-1 bg-white">
+    <View className="p-6 gap-6">
+      {/* Avatar Section */}
+      <View className="items-center">
+        <UserAvatarPicker currentAvatar={avatarUrl} onUpload={setAvatarUrl} />
       </View>
+
+      {/* Username */}
+      <View>
+        <Text className="text-gray-500 text-sm mb-2">Username</Text>
+        <TextInput
+          value={username}
+          onChangeText={setUsername}
+          placeholder="Enter your username"
+          placeholderTextColor="#aaa"
+          className="border border-gray-300 rounded-xl p-4 text-black bg-gray-50"
+        />
+      </View>
+
+      {/* Bio */}
+      <View>
+        <Text className="text-gray-500 text-sm mb-2">Bio</Text>
+        <TextInput
+          value={bio}
+          onChangeText={setBio}
+          placeholder="Write something about yourself"
+          placeholderTextColor="#aaa"
+          className="border border-gray-300 rounded-xl p-4 text-black bg-gray-50"
+          multiline
+          numberOfLines={4}
+        />
+      </View>
+
+      {/* Postcode */}
+      <View>
+        <Text className="text-gray-500 text-sm mb-2">Postcode</Text>
+        <TextInput
+          value={postcode}
+          onChangeText={setPostcode}
+          placeholder="Enter your postcode"
+          placeholderTextColor="#aaa"
+          className="border border-gray-300 rounded-xl p-4 text-black bg-gray-50"
+        />
+      </View>
+
+      {/* Area */}
+      <View>
+        <Text className="text-gray-500 text-sm mb-2">Area</Text>
+        <TextInput
+          value={area}
+          onChangeText={setArea}
+          placeholder="Enter your area"
+          placeholderTextColor="#aaa"
+          className="border border-gray-300 rounded-xl p-4 text-black bg-gray-50"
+        />
+      </View>
+
+      {/* Country */}
+      <View>
+        <Text className="text-gray-500 text-sm mb-2">Country</Text>
+        <TextInput
+          value={country}
+          onChangeText={setCountry}
+          placeholder="Enter your country"
+          placeholderTextColor="#aaa"
+          className="border border-gray-300 rounded-xl p-4 text-black bg-gray-50"
+        />
+      </View>
+
+      {/* Save Button */}
+      <Pressable
+        onPress={() => mutate()}
+        disabled={isPending}
+        className={`${
+          isPending ? 'bg-gray-200' : 'bg-black'
+        } py-4 rounded-full mt-8`}
+      >
+        <Text
+          className={`text-center font-semibold ${
+            isPending ? 'text-gray-500' : 'text-white'
+          }`}
+        >
+          {isPending ? 'Saving...' : 'Save'}
+        </Text>
+      </Pressable>
     </View>
+  </ScrollView>
+  </KeyboardAvoidingView>
   );
 }
