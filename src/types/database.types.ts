@@ -149,33 +149,48 @@ export type Database = {
       posts: {
         Row: {
           area: string | null
+          city: string | null
           content: string | null
+          country: string | null
           created_at: string
           id: string
           images: string[] | null
+          location_type: string | null
           parent_id: string | null
-          post_code: string | null
+          state: string | null
+          street: string | null
           user_id: string
+          user_type: string | null
         }
         Insert: {
           area?: string | null
+          city?: string | null
           content?: string | null
+          country?: string | null
           created_at?: string
           id?: string
           images?: string[] | null
+          location_type?: string | null
           parent_id?: string | null
-          post_code?: string | null
+          state?: string | null
+          street?: string | null
           user_id?: string
+          user_type?: string | null
         }
         Update: {
           area?: string | null
+          city?: string | null
           content?: string | null
+          country?: string | null
           created_at?: string
           id?: string
           images?: string[] | null
+          location_type?: string | null
           parent_id?: string | null
-          post_code?: string | null
+          state?: string | null
+          street?: string | null
           user_id?: string
+          user_type?: string | null
         }
         Relationships: [
           {
@@ -199,15 +214,18 @@ export type Database = {
           area: string | null
           avatar_url: string | null
           bio: string | null
+          city: string | null
           country: string | null
-          county: string | null
           created_at: string | null
           first_name: string | null
           full_name: string | null
           id: string
           last_name: string | null
-          post_code: string | null
+          push_token: string | null
+          state: string | null
+          street: string | null
           updated_at: string | null
+          user_type: string | null
           username: string | null
           website: string | null
         }
@@ -215,15 +233,18 @@ export type Database = {
           area?: string | null
           avatar_url?: string | null
           bio?: string | null
+          city?: string | null
           country?: string | null
-          county?: string | null
           created_at?: string | null
           first_name?: string | null
           full_name?: string | null
           id: string
           last_name?: string | null
-          post_code?: string | null
+          push_token?: string | null
+          state?: string | null
+          street?: string | null
           updated_at?: string | null
+          user_type?: string | null
           username?: string | null
           website?: string | null
         }
@@ -231,15 +252,18 @@ export type Database = {
           area?: string | null
           avatar_url?: string | null
           bio?: string | null
+          city?: string | null
           country?: string | null
-          county?: string | null
           created_at?: string | null
           first_name?: string | null
           full_name?: string | null
           id?: string
           last_name?: string | null
-          post_code?: string | null
+          push_token?: string | null
+          state?: string | null
+          street?: string | null
           updated_at?: string | null
+          user_type?: string | null
           username?: string | null
           website?: string | null
         }

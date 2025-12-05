@@ -18,19 +18,24 @@ type UserListProps = {
 export default function UserList({ onPress }: UserListProps) {
   // const supabase = useSupabase();
   // const { user } = useUser();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['profiles'],
+    queryKey: ['profiles', profile?.id],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .neq('id', user!.id)
+        .neq('id', profile!.id)                // exclude current profile
+        .eq('city', profile!.city)
+        .eq('area', profile!.area)
+        .eq('state', profile!.state)
+        .eq('country', profile!.country)
         .throwOnError();
-
+  
       return data;
     },
+    enabled: !!profile,
   });
 
   if (isLoading) {

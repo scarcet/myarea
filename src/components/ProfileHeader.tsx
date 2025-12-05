@@ -54,12 +54,6 @@ export default function ProfileHeader() {
         </View>
       </View>
 
-      {/* Friends count */}
-      <View className="flex-row gap-2 mt-4">
-        <Text className="text-black font-bold">{profile?.friends_count || 0}</Text>
-        <Text className="text-gray-500">Friends</Text>
-      </View>
-
       {/* Buttons */}
       <View className="flex-row gap-3 mt-4 w-full px-8">
         <Link href="/profile/edit" asChild>

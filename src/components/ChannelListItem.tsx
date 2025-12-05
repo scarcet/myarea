@@ -24,7 +24,7 @@ export default function ChannelListItem({ channel }: ChannelListItemProps) {
   const avatarUrl = otherUser?.avatar_url;
 
   return (
-    <Link href={`/channel/${channel.id}`} asChild>
+    <Link href={`/privatechat/channel/${channel.id}`} asChild>
       <Pressable className='flex-row gap-3 p-4 border-b border-gray-200'>
         {/* Channel Image */}
         {avatarUrl? (
@@ -60,7 +60,7 @@ export default function ChannelListItem({ channel }: ChannelListItemProps) {
 
         {channel.lastMessage && (
           <Text className='text-xs text-neutral-500'>
-            {formatDistanceToNow(new Date(channel.lastMessage.createdAt), {
+            {formatDistanceToNow(new Date(channel.lastMessage.created_at), {
               addSuffix: true,
             })}
           </Text>

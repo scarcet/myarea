@@ -23,7 +23,11 @@ function StackHeader() {
   if (channel.type === 'direct') {
     channelName = otherUser?.full_name || 'Unknown';
   }
-  return <Stack.Screen options={{ title: channelName }} />;
+  return <Stack.Screen 
+  options={{ 
+    title: channelName,
+    headerBackTitle: 'Back', 
+  }} />;
 }
 
 export default function ChannelScreen() {

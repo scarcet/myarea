@@ -1,25 +1,25 @@
 import { Stack } from 'expo-router';
 
-export default function HomeLayout() {
+export default function PrivateChatLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name='(tabs)'
+        name='chats'
         options={{ headerShown: false, title: 'Home' }}
       />
-      <Stack.Screen
-        name='channel/[id]'
+      {/* <Stack.Screen
+        name='privatechat/channel/[id]'
         options={{
           title: 'Channel',
           headerBackButtonDisplayMode: 'minimal',
           // headerLargeTitle: true,
           // headerTransparent: true,
         }}
-      />
+      /> */}
 
       <Stack.Screen
         name='new/chat'
-        options={{ title: 'New Chat', presentation: 'modal' }}
+        options={{ title: 'People in your area', presentation: 'modal' }}
       />
     </Stack>
   );

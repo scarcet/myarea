@@ -1,5 +1,5 @@
 import { View, Text, Image, Pressable } from 'react-native';
-import { Post } from '@/types';
+import { Post } from '@/type';
 import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 import SupabaseImage from './SupabaseImage';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
+import { router } from "expo-router";
 import { likePost, unlikePost, getLikesForPost, hasUserLikedPost } from '@/services/posts';
 
 dayjs.extend(relativeTime);
@@ -64,7 +65,13 @@ export default function PostListItem({
         className={`bg-white ${isLastInGroup ? 'border-b border-gray-200' : ''}`}
       >
         {/* Header: Avatar + Username + Time */}
-        <View className="flex-row items-center px-4 pt-4">
+        <Pressable
+      className="flex-row items-center px-4 pt-4"
+      onPress={(e) => {
+        e.stopPropagation();               // 👈 Prevent opening the post
+        router.push(`/(protected)/${post.user.id}`);
+      }}
+    >
           <SupabaseImage
             bucket="avatars"
             path={post.user.avatar_url}
@@ -80,7 +87,7 @@ export default function PostListItem({
               {dayjs(post.created_at).fromNow()}
             </Text>
           </View>
-        </View>
+          </Pressable>
 
         {/* Post Text Content */}
         {post.content && (

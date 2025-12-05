@@ -1,9 +1,15 @@
 import { router, Tabs } from "expo-router";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { View } from 'react-native';
+import NotificationProvider from '@/providers/NotificationProvider';
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function TabLayout() {
+  const { profile } = useAuth();
+  const homeTitle = profile?.area ? `Home - ${profile.area}` : "Home";
+  const streetTitle = profile?.street ? `${profile.street} - Street` : "Street";
   return (
+    <NotificationProvider>
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: 'black',
@@ -14,9 +20,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(home)"
         options={{
-          title: 'Home',
+          title: homeTitle,
           headerShown: false,
-          headerTitle: 'AREA',
           headerTintColor: "#33adff",
           tabBarIcon: ({ color }) => <AntDesign name="home" size={24} color={color} />,
         }}
@@ -24,8 +29,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="myArea"
         options={{
-          title: 'My Area',
-          tabBarIcon: ({ color }) => <Feather name="globe" size={24} color={color} />
+          title: streetTitle,
+          tabBarIcon: ({ color }) => <Feather name="map-pin" size={24} color={color} />
         }}
       />
       <Tabs.Screen
@@ -46,18 +51,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="notification"
+        name="people"
         options={{
-          title: 'Notification',
-          tabBarIcon: ({ color }) => <Ionicons name="chatbubble-ellipses-outline" size={24} color={color} />
+          title: 'People in your area',
+          tabBarIcon: ({ color }) => <Ionicons name="people-outline" size={24} color={color} />
+
         }}
       />
+      
       <Tabs.Screen
-        name="(drawer)"
+        name="privatechat"
         options={{
-          title: 'Chats',
+          title: 'pchat',
           headerShown: false,
-          tabBarIcon: ({ color }) => <Feather name="user" size={24} color={color} />
+          tabBarIcon: ({ color }) => <Ionicons name="chatbubble-ellipses-outline" size={24} color={color} />
         }}
       />
       <Tabs.Screen
@@ -69,5 +76,6 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </NotificationProvider>
   )
 }

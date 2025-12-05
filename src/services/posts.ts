@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { TablesInsert } from '@/types/database.types';
+import { sendLikeNotification, sendPostNotification } from '@/utils/notification';
 
 type PostInput = TablesInsert<'posts'>;
 
@@ -13,14 +14,52 @@ export const fetchPosts = async () => {
   return data;
 };
 
+export const fetchStreetPosts = async (street: string, area: string, city: string, state: string, country: string) => {
+  const { data } = await supabase
+    .from("posts")
+    .select("*, user:profiles(*), replies:posts(count)")
+    .eq("location_type", "street")
+    .eq("street", street) 
+    .eq("area", area)
+    .eq("city", city)
+    .eq("state", state)
+    .eq("country", country) 
+    .order("created_at", { ascending: false })
+    .throwOnError();
+
+  return data;
+};
+
+export const fetchAreaPosts = async (area: string, city: string, state: string, country: string) => {
+  const { data } = await supabase
+    .from("posts")
+    .select("*, user:profiles(*), replies:posts(count)")
+    .eq("location_type", "area")
+    .or(`area.eq.${area},area.eq.general`)
+    .eq("city", city) 
+    .eq("state", state) 
+    .eq("country", country) 
+    // .or("user_type.eq.general,user_type.is.null")
+    .order("created_at", { ascending: false })
+    .throwOnError();
+
+  return data;
+};
+
+
 export const createPost = async (newPost: PostInput) => {
   const { data } = await supabase
     .from('posts')
     .insert(newPost)
     .select('*')
     .throwOnError();
+  const createdPost = data?.[0];
+  if (createdPost?.id) {
+    // 🔥 Trigger push notifications for users in the same area
+    await sendPostNotification(createdPost.id);
+  }
 
-  return data;
+  return createdPost;
 };
 
 export const getPostById = async (id: string) => {
@@ -69,12 +108,14 @@ export const getPostsReplies = async (id: string) => {
 // services for likes
 
 export async function likePost (postId: string, userId: string) {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('likes')
     .upsert(
       { post_id: postId, user_id: userId },
       { onConflict: 'post_id,user_id' } // ignore duplicates
-    );
+    )
+    .select();
+    sendLikeNotification(data[0]);
 
   if (error) throw error;
 }

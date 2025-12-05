@@ -7,19 +7,29 @@ import {
   Modal,
   TouchableOpacity 
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/providers/AuthProvider';
 import { useQuery } from '@tanstack/react-query';
 import { getPostsByUserId } from '@/services/posts';
 import PostListItem from '@/components/PostListItem';
 import ProfileHeader from '@/components/ProfileHeader';
-import { useState } from 'react';
-import { router } from 'expo-router';
+import { useState, useEffect } from 'react';
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 
 export default function ProfileScreen() {
   const { user } = useAuth();
+  const navigation = useNavigation();
+  const { openMenu } = useLocalSearchParams();
+
   const [menuVisible, setMenuVisible] = useState(false);
+
+  // 🔥 when layout triggers menu
+  useEffect(() => {
+    if (openMenu) {
+      setMenuVisible(true);
+      navigation.setParams({ openMenu: null });
+    }
+  }, [openMenu]);
 
   const {
     data: posts,
@@ -39,14 +49,8 @@ export default function ProfileScreen() {
 
   return (
     <View className="flex-1 bg-white">
-      {/* Header row like Threads: menu icon only */}
-      <View className="flex-row justify-end items-center px-4 pt-4">
-        <Pressable onPress={() => setMenuVisible(true)} className="p-2">
-          <Ionicons name="ellipsis-horizontal" size={24} color="black" />
-        </Pressable>
-      </View>
 
-      {/* Profile details + posts */}
+      {/* Profile + posts */}
       <FlatList
         data={posts}
         renderItem={({ item }) => <PostListItem post={item} />}
@@ -61,7 +65,7 @@ export default function ProfileScreen() {
         showsVerticalScrollIndicator={false}
       />
 
-    {/* Bottom Sheet Menu */}
+      {/* Modal */}
       <Modal
         visible={menuVisible}
         transparent
@@ -73,13 +77,7 @@ export default function ProfileScreen() {
           className="flex-1 bg-black/40"
         >
           <View className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-6">
-            <View className="border-b border-gray-200 pb-3 mb-3">
-              <Text className="text-center text-black font-semibold text-lg">
-                Menu
-              </Text>
-            </View>
 
-            {/* Menu items */}
             <TouchableOpacity
               onPress={() => {
                 setMenuVisible(false);
@@ -88,36 +86,6 @@ export default function ProfileScreen() {
               className="py-3"
             >
               <Text className="text-black text-base">Account</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setMenuVisible(false);
-                router.push('/account/status');
-              }}
-              className="py-3"
-            >
-              <Text className="text-black text-base">Account Status</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setMenuVisible(false);
-                router.push('/help');
-              }}
-              className="py-3"
-            >
-              <Text className="text-black text-base">Help</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setMenuVisible(false);
-                router.push('/about');
-              }}
-              className="py-3"
-            >
-              <Text className="text-black text-base">About</Text>
             </TouchableOpacity>
 
             <View className="border-t border-gray-200 mt-4 pt-3">
@@ -131,9 +99,11 @@ export default function ProfileScreen() {
                 <Text className="text-red-500 text-base font-semibold">Log Out</Text>
               </TouchableOpacity>
             </View>
+
           </View>
         </Pressable>
       </Modal>
+
     </View>
   );
 }
