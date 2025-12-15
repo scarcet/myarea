@@ -1,4 +1,5 @@
 import { View, ActivityIndicator, FlatList, Text, RefreshControl } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import PostListItem from '@/components/PostListItem';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchAreaPosts } from '@/services/posts';
@@ -11,9 +12,9 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["posts", profile?.area, profile?.city, profile?.state, profile?.country],
+    queryKey: ["posts", profile?.area, profile?.city, profile?.country],
     queryFn: () =>
-      fetchAreaPosts(profile!.area, profile!.city, profile!.state, profile!.country),
+      fetchAreaPosts(profile!.area, profile!.city, profile!.country),
     enabled: !!profile, // 👈 Only runs when profile is loaded
   });
 
@@ -44,6 +45,14 @@ export default function HomeScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        ListEmptyComponent={() => (
+          <View className="items-center justify-center mt-10 px-4">
+            <Ionicons name="newspaper-outline" size={48} color="#9ca3af" />
+            <Text className="text-gray-400 text-lg font-medium mt-3">
+              No posts available in your area yet
+            </Text>
+          </View>
+        )}
       />
     </View>
   );

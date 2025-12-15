@@ -1,4 +1,4 @@
-import { View, TextInput, Pressable } from 'react-native';
+import { View, TextInput, Pressable, Alert } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
@@ -22,8 +22,8 @@ export default function PostReplyInput({ postId }: { postId: string }) {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
     onError: (error) => {
-      console.error(error);
-      // Alert.alert('Error', error.message);
+      // console.error(error);
+      Alert.alert('Error', error.message);
     },
   });
 

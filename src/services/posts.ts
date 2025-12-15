@@ -14,7 +14,7 @@ export const fetchPosts = async () => {
   return data;
 };
 
-export const fetchStreetPosts = async (street: string, area: string, city: string, state: string, country: string) => {
+export const fetchStreetPosts = async (street: string, area: string, city: string, country: string) => {
   const { data } = await supabase
     .from("posts")
     .select("*, user:profiles(*), replies:posts(count)")
@@ -22,7 +22,6 @@ export const fetchStreetPosts = async (street: string, area: string, city: strin
     .eq("street", street) 
     .eq("area", area)
     .eq("city", city)
-    .eq("state", state)
     .eq("country", country) 
     .order("created_at", { ascending: false })
     .throwOnError();
@@ -30,14 +29,13 @@ export const fetchStreetPosts = async (street: string, area: string, city: strin
   return data;
 };
 
-export const fetchAreaPosts = async (area: string, city: string, state: string, country: string) => {
+export const fetchAreaPosts = async (area: string, city: string, country: string) => {
   const { data } = await supabase
     .from("posts")
     .select("*, user:profiles(*), replies:posts(count)")
     .eq("location_type", "area")
     .or(`area.eq.${area},area.eq.general`)
-    .eq("city", city) 
-    .eq("state", state) 
+    .eq("city", city)
     .eq("country", country) 
     // .or("user_type.eq.general,user_type.is.null")
     .order("created_at", { ascending: false })
@@ -72,6 +70,18 @@ export const getPostById = async (id: string) => {
 
   return data;
 };
+
+export async function deletePost(postId: string, userId: string) {
+  // make sure user owns the post on database level
+  const { error } = await supabase
+    .from('posts')
+    .delete()
+    .eq('id', postId)
+    .eq('user_id', userId);
+
+  if (error) throw error;
+}
+
 
 export const getPostsByUserId = async (id: string) => {
   const { data } = await supabase

@@ -21,7 +21,6 @@ export default function ProfileEditScreen() {
   const [street, setStreet] = useState('');
   const [area, setArea] = useState('');
   const [city, setCity] = useState('');
-  const [state, setState] = useState('');
   const [country, setCountry] = useState('');
 
   const { user } = useAuth();
@@ -45,7 +44,6 @@ export default function ProfileEditScreen() {
         street: street,
         area,
         city,
-        state,
         country,
       }),
     onSuccess: () => {
@@ -62,7 +60,6 @@ export default function ProfileEditScreen() {
       setStreet(profile.street ?? '');
       setArea(profile.area ?? '');
       setCity(profile.city ?? '');
-      setState(profile.state ?? '');
       setCountry(profile.country ?? '');
     }
   }, [profile]);
@@ -112,6 +109,7 @@ export default function ProfileEditScreen() {
         <TextInput
           value={street}
           onChangeText={setStreet}
+          autoCapitalize="none"
           placeholder="Enter your postcode"
           placeholderTextColor="#aaa"
           className="border border-gray-300 rounded-xl p-4 text-black bg-gray-50"
@@ -120,10 +118,11 @@ export default function ProfileEditScreen() {
 
       {/* Area */}
       <View>
-        <Text className="text-gray-500 text-sm mb-2">Area/Neighbourhood/Estate</Text>
+        <Text className="text-gray-500 text-sm mb-2">Area/Neighbourhood/Estate/Village</Text>
         <TextInput
           value={area}
           onChangeText={setArea}
+          autoCapitalize="none"
           placeholder="Enter your area"
           placeholderTextColor="#aaa"
           className="border border-gray-300 rounded-xl p-4 text-black bg-gray-50"
@@ -132,23 +131,12 @@ export default function ProfileEditScreen() {
 
         {/* City */}
       <View>
-        <Text className="text-gray-500 text-sm mb-2">City/Town/Village</Text>
+        <Text className="text-gray-500 text-sm mb-2">City/State/Town/Village</Text>
         <TextInput
           value={city}
           onChangeText={setCity}
+          autoCapitalize="none"
           placeholder="Enter your area"
-          placeholderTextColor="#aaa"
-          className="border border-gray-300 rounded-xl p-4 text-black bg-gray-50"
-        />
-      </View>
-
-              {/* State */}
-              <View>
-        <Text className="text-gray-500 text-sm mb-2">State/County/District</Text>
-        <TextInput
-          value={state}
-          onChangeText={setState}
-          placeholder="Enter your state"
           placeholderTextColor="#aaa"
           className="border border-gray-300 rounded-xl p-4 text-black bg-gray-50"
         />
@@ -160,6 +148,7 @@ export default function ProfileEditScreen() {
         <TextInput
           value={country}
           onChangeText={setCountry}
+          autoCapitalize="none"
           placeholder="Enter your country"
           placeholderTextColor="#aaa"
           className="border border-gray-300 rounded-xl p-4 text-black bg-gray-50"

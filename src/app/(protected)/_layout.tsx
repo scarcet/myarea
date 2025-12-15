@@ -22,24 +22,9 @@ export default function ProtectedLayout() {
         <Stack.Screen
         name='[id]'
         options={{
-          title: 'Profiles',
-          // presentation: 'modal',
-          headerBackButtonDisplayMode: 'generic',
-          // animation: 'slide_from_bottom',
-        }}
-      />
-        <Stack.Screen
-        name='completeProfileStep1'
-        options={{
-          title: 'Edit Profile',
-          // animation: 'slide_from_bottom',
-        }}
-      />
-        <Stack.Screen
-        name='completeProfileStep2'
-        options={{
-          title: 'Edit Location',
-          // animation: 'slide_from_bottom',
+          title: 'Profile',
+          presentation: 'modal',
+          // headerBackButtonDisplayMode: 'default',
         }}
       />
     </Stack>

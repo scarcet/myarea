@@ -9,11 +9,11 @@ export default function ChatLayout() {
         options={({ navigation }) => ({
           title: 'Chats',
           headerLargeTitle: true,
-          headerRight: () => (
-            <Link href='privatechat/new/chat' asChild>
-              <Ionicons name='add' size={28} className='px-1' color='gray' />
-            </Link>
-          ),
+          // headerRight: () => (
+          //   <Link href='privatechat/new/chat' asChild>
+          //     <Ionicons name='add' size={28} className='px-1' color='gray' />
+          //   </Link>
+          // ),
         })}
       />
     </Stack>

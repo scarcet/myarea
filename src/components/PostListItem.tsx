@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable } from 'react-native';
+import { View, Text, Image, Pressable, Alert, Modal } from 'react-native';
 import { Post } from '@/type';
 import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
@@ -10,7 +10,9 @@ import SupabaseImage from './SupabaseImage';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { router } from "expo-router";
-import { likePost, unlikePost, getLikesForPost, hasUserLikedPost } from '@/services/posts';
+import { useQueryClient } from "@tanstack/react-query";
+import { likePost, unlikePost, getLikesForPost, hasUserLikedPost, deletePost } from '@/services/posts';
+
 
 dayjs.extend(relativeTime);
 
@@ -24,13 +26,19 @@ type PostWithUser = Tables<'posts'> & {
 export default function PostListItem({
   post,
   isLastInGroup = true,
+  showDelete = false,
 }: {
   post: PostWithUser;
   isLastInGroup?: boolean;
+  showDelete?: boolean;
 }) {
   const { user } = useAuth();
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const queryClient = useQueryClient();
+
+
 
   useEffect(() => {
     const fetchLikes = async () => {
@@ -56,22 +64,27 @@ export default function PostListItem({
       }
       setLiked(!liked);
     } catch (error) {
-      console.error(error);
+      Alert.alert(
+        "Something went wrong",
+        "Please try again in a moment."
+      );
     }
   };
   return (
+    <>
     <Link href={`/posts/${post.id}`} asChild>
       <Pressable
         className={`bg-white ${isLastInGroup ? 'border-b border-gray-200' : ''}`}
       >
         {/* Header: Avatar + Username + Time */}
         <Pressable
-      className="flex-row items-center px-4 pt-4"
+      className="flex-row items-center justify-between px-4 pt-4"
       onPress={(e) => {
         e.stopPropagation();               // 👈 Prevent opening the post
         router.push(`/(protected)/${post.user.id}`);
       }}
     >
+        <View className="flex-row items-center">
           <SupabaseImage
             bucket="avatars"
             path={post.user.avatar_url}
@@ -79,14 +92,26 @@ export default function PostListItem({
             transform={{ width: 50, height: 50 }}
           />
 
-          <View className="flex-1">
+          <View>
             <Text className="text-black font-semibold text-base">
               {post.user.username}
             </Text>
             <Text className="text-gray-500 text-sm">
               {dayjs(post.created_at).fromNow()}
             </Text>
-          </View>
+            </View>
+            </View>
+            {showDelete && user?.id === post.user.id && (
+  <Pressable
+    onPress={(e) => {
+      e.stopPropagation();
+      setMenuVisible(true);
+    }}
+  >
+    <Ionicons name="ellipsis-horizontal" size={22} color="#6B7280" />
+  </Pressable>
+)}
+         
           </Pressable>
 
         {/* Post Text Content */}
@@ -134,6 +159,40 @@ export default function PostListItem({
           </Pressable>
         </View>
       </Pressable>
-    </Link>
+      </Link>
+      {menuVisible && (
+    <Modal
+      transparent
+      animationType="fade"
+      onRequestClose={() => setMenuVisible(false)}
+    >
+      <Pressable
+        className="flex-1 bg-black/40"
+        onPress={() => setMenuVisible(false)}
+      >
+        <View className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-6">
+          
+          <Pressable
+            className="py-3"
+            onPress={async () => {
+              setMenuVisible(false);
+              await deletePost(post.id, user!.id);
+              queryClient.invalidateQueries({ queryKey: ["posts"] });
+            }}
+          >
+            <Text className="text-red-500 text-base font-semibold">
+              Delete Post
+            </Text>
+          </Pressable>
+  
+          <Pressable className="py-3" onPress={() => setMenuVisible(false)}>
+            <Text className="text-black text-base">Cancel</Text>
+          </Pressable>
+  
+        </View>
+      </Pressable>
+    </Modal>
+  )}
+</>
   );
 }

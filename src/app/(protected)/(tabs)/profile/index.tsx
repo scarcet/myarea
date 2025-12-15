@@ -7,6 +7,7 @@ import {
   Modal,
   TouchableOpacity 
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/providers/AuthProvider';
 import { useQuery } from '@tanstack/react-query';
@@ -53,7 +54,7 @@ export default function ProfileScreen() {
       {/* Profile + posts */}
       <FlatList
         data={posts}
-        renderItem={({ item }) => <PostListItem post={item} />}
+        renderItem={({ item }) => <PostListItem post={item} showDelete />}
         ListHeaderComponent={() => (
           <>
             <ProfileHeader />
@@ -61,6 +62,14 @@ export default function ProfileScreen() {
               Your Posts
             </Text>
           </>
+        )}
+        ListEmptyComponent={() => (
+          <View className="items-center justify-center mt-10 px-4">
+            <Ionicons name="images-outline" size={48} color="#9ca3af" />
+            <Text className="text-gray-400 text-lg font-medium mt-3">
+              You haven't posted anything yet
+            </Text>
+          </View>
         )}
         showsVerticalScrollIndicator={false}
       />
@@ -81,12 +90,23 @@ export default function ProfileScreen() {
             <TouchableOpacity
               onPress={() => {
                 setMenuVisible(false);
-                router.push('/account');
+                router.push('/profile/orgInfo/termsCondition');
               }}
               className="py-3"
             >
-              <Text className="text-black text-base">Account</Text>
+              <Text className="text-black text-base">Terms and Conditions</Text>
             </TouchableOpacity>
+            <View className="border-t border-gray-200 mt-4 pt-3">
+            <TouchableOpacity
+              onPress={() => {
+                setMenuVisible(false);
+                router.push('/profile/orgInfo/aboutUs');
+              }}
+              className="py-3"
+            >
+              <Text className="text-black text-base">About Us</Text>
+            </TouchableOpacity>
+            </View>
 
             <View className="border-t border-gray-200 mt-4 pt-3">
               <TouchableOpacity

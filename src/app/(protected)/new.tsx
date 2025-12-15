@@ -212,7 +212,6 @@ export default function NewPostScreen() {
         street: profile?.street,
         area: profile?.area,
         city: profile?.city,
-        state: profile?.state,
         country: profile?.country,
         location_type: postLocation, // <-- post type
       });

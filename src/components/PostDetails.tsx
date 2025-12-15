@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable } from 'react-native';
+import { View, Text, Image, Pressable, Alert } from 'react-native';
 import { Post } from '@/type';
 import { router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
@@ -50,7 +50,10 @@ export default function PostDetails({ post }: { post: PostWithUser }) {
       }
       setLiked(!liked);
     } catch (error) {
-      console.error(error);
+      Alert.alert(
+        "Something went wrong",
+        "Please try again in a moment."
+      );
     }
   };
   return (

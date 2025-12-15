@@ -9,6 +9,7 @@ import {
   ScrollView,
   Platform
 } from 'react-native';
+import { Ionicons } from "@expo/vector-icons";
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -17,6 +18,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -64,7 +66,10 @@ export default function LoginScreen() {
               Email
             </Text>
             <TextInput
-               className="w-full px-5 py-[15px] bg-neutral-300 border border-neutral-300 rounded-2xl text-black text-xl leading-[22px] placeholder:text-gray-500"
+
+               className="w-full px-5 py-[15px] bg-neutral-100 rounded-xl border border-neutral-300
+               text-base text-black text-xl leading-[22px] placeholder:text-gray-500
+               focus:border-grey-900 focus:bg-white"
                placeholder="Enter your email"
                placeholderTextColor="#6B7280"
                keyboardType="email-address"
@@ -79,14 +84,26 @@ export default function LoginScreen() {
             <Text className='text-lg font-semibold text-neutral-900 mb-1'>
               Password
             </Text>
-            <TextInput
-               className="w-full px-5 py-[15px] bg-neutral-300 border border-neutral-300 rounded-2xl text-black text-lg leading-[22px] placeholder:text-gray-500"
-               placeholder="Enter your password"
-               placeholderTextColor="#6B7280"
-               secureTextEntry
-               value={password}
-               onChangeText={setPassword}
-             />
+            <View className="relative">
+  <TextInput
+    placeholder="Password"
+    value={password}
+    onChangeText={setPassword}
+    secureTextEntry={!showPassword}  // 👈 hide or show
+    className="w-full px-5 py-[15px] bg-neutral-100 rounded-xl border border-neutral-300
+    text-base text-black text-xl leading-[22px] placeholder:text-gray-500
+    focus:border-grey-900 focus:bg-white"
+  />
+
+  {/* TOGGLE BUTTON */}
+  <TouchableOpacity
+    onPress={() => setShowPassword(!showPassword)}
+    className="absolute right-4 top-4"
+  >
+<Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="gray" />
+
+  </TouchableOpacity>
+</View>
 
           </View>
 

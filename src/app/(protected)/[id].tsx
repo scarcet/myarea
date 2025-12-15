@@ -121,7 +121,7 @@ export default function UserProfileScreen() {
     }
   
     // 5. Navigate
-    router.push(`/channel/${newChannel.id}`);
+    router.push(`privatechat/channel/${newChannel.id}`);
   };
   
 
@@ -138,15 +138,24 @@ export default function UserProfileScreen() {
           transform={{ width: 96, height: 96 }}
         />
         <View className="flex-1">
+          {/* Username */}
           <Text className="text-black text-xl font-bold">{user?.username}</Text>
-          {user?.area && (
-            <View className="flex-row items-center mt-1">
-              <Ionicons name="location-outline" size={16} color="#6b7280" />
-              <Text className="text-gray-500 text-sm ml-1">{user.area}</Text>
-            </View>
-          )}
+
+          {/* Location */}
+          <View className="flex-row items-center mt-1">
+          <Ionicons name="location-outline" size={16} color="#6b7280" />
+          <Text className="text-gray-500 text-sm ml-1">{user?.street}</Text>
+          <Text className="text-gray-400 text-sm mx-2">•</Text>
+          <Ionicons name="walk-outline" size={16} color="#6b7280" />
+          <Text className="text-gray-500 text-sm ml-1">{user?.area}</Text>
+
+          </View>
+
+          {/* Bio (kept in same column) */}
           {user?.bio && (
-            <Text className="text-gray-700 mt-2 leading-snug font-semibold">{user.bio}</Text>
+            <Text className="text-gray-700 mt-2 leading-snug font-semibold flex-wrap" numberOfLines={3} ellipsizeMode="tail">
+              {user.bio}
+            </Text>
           )}
         </View>
       </View>

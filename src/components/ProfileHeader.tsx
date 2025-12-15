@@ -20,7 +20,7 @@ export default function ProfileHeader() {
 
   if (isLoading) return <ActivityIndicator />;
   if (error) return <Text className='text-white'>Error: {error.message}</Text>;
-  console.log(JSON.stringify(profile, null, 2));
+  // console.log(JSON.stringify(profile, null, 2));
 
   return (
     <View className="p-4 bg-white">
@@ -38,16 +38,18 @@ export default function ProfileHeader() {
           <Text className="text-black text-xl font-bold">{profile?.username}</Text>
 
           {/* Location */}
-          {profile?.area && (
-            <View className="flex-row items-center mt-1">
-              <Ionicons name="location-outline" size={16} color="#6b7280" />
-              <Text className="text-gray-500 text-sm ml-1">{profile.area}</Text>
-            </View>
-          )}
+          <View className="flex-row items-center mt-1">
+          <Ionicons name="location-outline" size={16} color="#6b7280" />
+          <Text className="text-gray-500 text-sm ml-1">{profile?.street}</Text>
+          <Text className="text-gray-400 text-sm mx-2">•</Text>
+          <Ionicons name="walk-outline" size={16} color="#6b7280" />
+          <Text className="text-gray-500 text-sm ml-1">{profile?.area}</Text>
+
+          </View>
 
           {/* Bio (kept in same column) */}
           {profile?.bio && (
-            <Text className="text-gray-700 mt-2 leading-snug font-semibold flex-wrap">
+            <Text className="text-gray-700 mt-2 leading-snug font-semibold flex-wrap" numberOfLines={3} ellipsizeMode="tail">
               {profile.bio}
             </Text>
           )}
@@ -55,17 +57,13 @@ export default function ProfileHeader() {
       </View>
 
       {/* Buttons */}
-      <View className="flex-row gap-3 mt-4 w-full px-8">
-        <Link href="/profile/edit" asChild>
-          <Pressable className="flex-1 py-2 rounded-full border border-gray-300 bg-white">
-            <Text className="text-center text-black font-medium">Edit Profile</Text>
-          </Pressable>
-        </Link>
-
-        <Pressable className="flex-1 py-2 rounded-full border border-gray-300 bg-white">
-          <Text className="text-center text-black font-medium">Share Profile</Text>
-        </Pressable>
-      </View>
+      <View className="mt-4 w-full px-8">
+  <Link href="/profile/edit" asChild>
+    <Pressable className="w-full py-2 rounded-full border border-gray-300 bg-white">
+      <Text className="text-center text-black font-medium">Edit Profile</Text>
+    </Pressable>
+  </Link>
+</View>
     </View>
   );
 }

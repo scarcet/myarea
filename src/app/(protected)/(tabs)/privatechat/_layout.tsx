@@ -7,20 +7,20 @@ export default function PrivateChatLayout() {
         name='chats'
         options={{ headerShown: false, title: 'Home' }}
       />
-      {/* <Stack.Screen
-        name='privatechat/channel/[id]'
+      <Stack.Screen
+        name='channel'
         options={{
           title: 'Channel',
           headerBackButtonDisplayMode: 'minimal',
           // headerLargeTitle: true,
           // headerTransparent: true,
         }}
-      /> */}
+      />
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name='new/chat'
         options={{ title: 'People in your area', presentation: 'modal' }}
-      />
+      /> */}
     </Stack>
   );
 }

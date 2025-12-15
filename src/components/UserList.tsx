@@ -26,10 +26,9 @@ export default function UserList({ onPress }: UserListProps) {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .neq('id', profile!.id)                // exclude current profile
-        .eq('city', profile!.city)
+        .neq('id', profile!.id)
         .eq('area', profile!.area)
-        .eq('state', profile!.state)
+        .eq('city', profile!.city)
         .eq('country', profile!.country)
         .throwOnError();
   

@@ -1,4 +1,5 @@
 import { View, ActivityIndicator, FlatList, Text, RefreshControl } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import PostListItem from '@/components/PostListItem';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchStreetPosts } from "@/services/posts";
@@ -15,7 +16,7 @@ export default function StreetScreen() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["posts", profile?.street, profile?.area, profile?.city, profile?.state, profile?.country],
-    queryFn: () => fetchStreetPosts(profile!.street ?? '', profile!.area ?? '', profile!.city ?? '', profile!.state ?? '', profile!.country ?? ''),
+    queryFn: () => fetchStreetPosts(profile!.street ?? '', profile!.area ?? '', profile!.city ?? '', profile!.country ?? ''),
   });
 
   const onRefresh = async () => {
@@ -38,6 +39,14 @@ export default function StreetScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        ListEmptyComponent={() => (
+          <View className="items-center justify-center mt-10 px-4">
+            <Ionicons name="newspaper-outline" size={48} color="#9ca3af" />
+            <Text className="text-gray-400 text-lg font-medium mt-3">
+              No posts available in your street yet
+            </Text>
+          </View>
+        )}
       />
     </View>
   );
