@@ -1,4 +1,4 @@
-import { User } from '@/types';
+import { User } from '@/type';
 import SupabaseImage from './SupabaseImage';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, Pressable } from 'react-native';

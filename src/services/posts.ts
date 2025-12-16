@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { TablesInsert } from '@/types/database.types';
+import { TablesInsert } from '@/type/database.types';
 import { sendLikeNotification, sendPostNotification } from '@/utils/notification';
 
 type PostInput = TablesInsert<'posts'>;

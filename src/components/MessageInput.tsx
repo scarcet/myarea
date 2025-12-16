@@ -16,7 +16,7 @@ import { useSupabase } from '@/providers/SupabaseProvider';
 // import { useUser } from '@clerk/clerk-expo';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/providers/AuthProvider';
-import { Channel } from '@/types';
+import { Channel } from '@/type';
 import { useChannel } from '@/providers/ChannelProvider';
 import { uploadImage } from '@/utils/storage';
 

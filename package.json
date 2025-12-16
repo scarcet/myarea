@@ -4,8 +4,8 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "gen-types": "npx supabase gen types typescript --project-id cfhzhdpsecmdiouhfdpj > src/types/database.types.ts"
   },
@@ -19,8 +19,9 @@
     "@tanstack/react-query": "^5.89.0",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.18",
-    "expo": "~54.0.25",
+    "expo": "~54.0.29",
     "expo-constants": "~18.0.10",
+    "expo-dev-client": "~6.0.20",
     "expo-device": "~8.0.9",
     "expo-image-picker": "~17.0.8",
     "expo-linking": "~8.0.9",

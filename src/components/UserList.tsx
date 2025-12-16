@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useQuery } from '@tanstack/react-query';
 
-import { Tables } from '@/types/database.types';
+import { Tables } from '@/type/database.types';
 type User = Tables<'profiles'>;
 
 type UserListProps = {

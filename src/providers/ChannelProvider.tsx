@@ -10,7 +10,7 @@ import { supabase } from '@/lib/supabase';
 import { useUser } from '@clerk/clerk-expo';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ActivityIndicator, View, Text } from 'react-native';
-import { ChannelWithUsers } from '@/types/index';
+import { ChannelWithUsers } from '@/type/index';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
 type ChannelContext = {

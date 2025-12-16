@@ -1,7 +1,7 @@
 import { ActivityIndicator, FlatList } from 'react-native';
 import MessageListItem from './MessageListItem';
 import { useQuery } from '@tanstack/react-query';
-import { Channel } from '@/types';
+import { Channel } from '@/type';
 import { useSupabase } from '@/providers/SupabaseProvider';
 import { supabase } from '@/lib/supabase';
 // import { useUser } from '@clerk/clerk-expo';

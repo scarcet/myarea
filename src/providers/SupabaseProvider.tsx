@@ -13,7 +13,7 @@ import {
 import { NativeModule, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { useSession } from '@clerk/clerk-expo';
-import { Database } from '@/types/database.types';
+import { Database } from '@/type/database.types';
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;

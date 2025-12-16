@@ -1,4 +1,4 @@
-import { Channel, ChannelWithUsers } from '@/types/index';
+import { Channel, ChannelWithUsers } from '@/type/index';
 import { View, Text, Image, Pressable } from 'react-native';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'expo-router';

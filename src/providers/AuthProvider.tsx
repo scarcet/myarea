@@ -5,7 +5,7 @@ import { ActivityIndicator } from 'react-native';
 import { View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { getProfileById } from '@/services/profiles';
-import { Tables } from '@/types/database.types';
+import { Tables } from '@/type/database.types';
 
 type AuthContextType = {
   user: User | null;

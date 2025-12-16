@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "../types/database.types";
+import { Database } from "../type/database.types";
 
 // export const downloadImage = async (
 //   image: string,

@@ -16,7 +16,7 @@ export async function sendLikeNotification(like: { id: string }) {
     to: pushToken,
     sound: "default",
     title: "Someone liked your post ❤️",
-    body: `${data?.posts?.profiles.username} liked your post!`,
+    body: `${data?.posts?.content}`,
     data: { postId: data.posts.id },
   };
 
@@ -27,44 +27,48 @@ export async function sendPostNotification(postId: string) {
   // 1. Fetch the post and its author
   const { data: post, error: postError } = await supabase
     .from("posts")
-    .select("id, content, area, profiles(username, id)")
+    .select("id, content, area, city, country,profiles(username, id)")
     .eq("id", postId)
     .single();
 
   if (postError || !post) return;
 
-  const area = post.area;
-  if (!area) return;
+  const { area, city, country } = post;
+  const authorId = post.profiles?.id;
 
-  // 2. Fetch all users in the same area that are NOT the author
-  const { data: users, error: usersError } = await supabase
-    .from("profiles")
-    .select("id, username, push_token, area")
-    .eq("area", area);
+  if (!area || !city || !country || !authorId) return;
 
-  if (usersError || !users) return;
+  // 2. Fetch users in same area (excluding author)
+const { data: users, error: usersError } = await supabase
+.from("profiles")
+.select("id, push_token")
+.eq("area", area)
+.eq("city", city)
+.eq("country", country)
+.neq("id", authorId)
+.not("push_token", "is", null);
 
-  // Filter valid push tokens and exclude the post creator
-  const pushTokens = users
-    .filter(
-      (u) => u.push_token && u.id !== post.profiles?.id // Do not notify the creator
-    )
-    .map((u) => ({
-      to: u.push_token as string,
-      sound: "default",
-      title: `${post.profiles?.username} posted in ${area}`,
-      body: post.content || "New post in your area",
-      data: { postId: post.id },
-    }));
+if (usersError || !users || users.length === 0) return;
 
-  if (pushTokens.length === 0) return;
+// 3. Deduplicate push tokens
+const uniquePushTokens = [...new Set(users.map(u => u.push_token))];
 
-  // 3. Send notifications in batches of 30 (Expo limit)
-  const batchSize = 30;
-  for (let i = 0; i < pushTokens.length; i += batchSize) {
-    const chunk = pushTokens.slice(i, i + batchSize);
-    await sendPushNotification(chunk);
-  }
+// 4. Build messages
+const messages = uniquePushTokens.map(token => ({
+to: token!,
+sound: "default",
+title: `${post.profiles?.username} posted in ${area}`,
+body: post.content || "New post in your area",
+data: { postId: post.id },
+}));
+
+if (messages.length === 0) return;
+
+// 5. Send in batches
+const batchSize = 30;
+for (let i = 0; i < messages.length; i += batchSize) {
+await sendPushNotification(messages.slice(i, i + batchSize));
+}
 }
 
 async function sendPushNotification(message: { [key: string]: any }) {

@@ -1,6 +1,6 @@
 import UserList from '@/components/UserList';
 import { supabase } from '@/lib/supabase';
-import { User } from '@/types';
+import { User } from '@/type';
 import { useAuth } from '@/providers/AuthProvider';
 import { View } from 'react-native';
 import { useMutation } from '@tanstack/react-query';

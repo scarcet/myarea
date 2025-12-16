@@ -1,4 +1,4 @@
-import { Message } from '@/types';
+import { Message } from '@/type';
 import { View, Text, Image } from 'react-native';
 import SupaImage from './SupaImage';
 
